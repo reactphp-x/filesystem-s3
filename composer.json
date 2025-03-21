@@ -1,0 +1,20 @@
+{
+    "name": "reactphp-x/filesystem-s3",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "ReactphpX\\FilesystemS3\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "wpjscc",
+            "email": "wpjscc@gmail.com"
+        }
+    ],
+    "require": {
+        "wpjscc/filesystem": "^0.2.0",
+        "aws/aws-sdk-php": "^3.0",
+        "react/http": "^1.11"
+    }
+}
