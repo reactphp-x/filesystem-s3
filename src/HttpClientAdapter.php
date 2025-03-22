@@ -13,6 +13,7 @@ class HttpClientAdapter
     public function __invoke(RequestInterface $request, array $options)
     {
 
+        $request = $request->withHeader('Expect', ''); // Disable Expect: 100-continue
         $promise = new Promise();
 
         $browser = new Browser();
