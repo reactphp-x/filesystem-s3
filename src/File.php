@@ -39,7 +39,27 @@ final class File implements FileInterface
 
     public function stat(): PromiseInterface
     {
-        throw new \RuntimeException("Not implemented");
+        $this->activate();
+        return new Promise(function ($resolve, $reject) {
+            $this->adapter->getS3Client()->headObjectAsync([
+                'Bucket' => $this->adapter->getBucket(),
+                'Key' => $this->path(),
+            ])->then(function ($result) use ($resolve) {
+                $this->deactivate();
+                $metadata = $result->toArray()['@metadata'] ?? [];
+                $stat = new Stat($this->path(), [
+                    'mode' => null,
+                    'size' => $metadata['headers']['content-length'] ?? null,
+                    'mtime' => $metadata['headers']['last-modified'] ?? null,
+                    'http_url' => $metadata['effectiveUri'] ?? null,
+                    'original_data' => $metadata,
+                ]);
+                $resolve($stat);
+            }, function ($error) use ($reject) {
+                $this->deactivate();
+                $reject($error);
+            });
+        });
     }
 
     public function unlink(): PromiseInterface
