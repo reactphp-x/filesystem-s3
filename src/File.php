@@ -47,14 +47,13 @@ final class File implements FileInterface
             ])->then(function ($result) use ($resolve) {
                 $this->deactivate();
                 $metadata = $result->toArray()['@metadata'] ?? [];
-                $stat = new Stat($this->path(), [
+                $resolve(new Stat($this->path(), [
                     'mode' => null,
                     'size' => $metadata['headers']['content-length'] ?? null,
                     'mtime' => $metadata['headers']['last-modified'] ?? null,
                     'http_url' => $metadata['effectiveUri'] ?? null,
                     'original_data' => $metadata,
-                ]);
-                $resolve($stat);
+                ]));
             }, function ($error) use ($reject) {
                 $this->deactivate();
                 $reject($error);
